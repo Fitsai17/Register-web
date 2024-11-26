@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Dashboard</title>
+</head>
+<body>
+  <div id="dashboard-container">
+    <h1>Welcome to your Dashboard</h1>
+
+    <div id="user-info">
+      <h2>Your Profile</h2>
+      <p><strong>Username:</strong> <span id="user-username">Loading...</span></p>
+      <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
+    </div>
+
+    <div id="actions">
+      <button id="edit-profile-btn">Edit Profile</button>
+      <button id="logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    // Отримання токену з localStorage
+    const token = localStorage.getItem('token');
+
+    // Перевірка, чи є токен
+    if (!token) {
+      window.location.href = '/login.html'; // Перехід на сторінку логіну, якщо немає токену
+    }
+
+    // Завантаження профілю користувача
+    async function loadUserProfile() {
+      const response = await fetch('/auth/profile', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        document.getElementById('user-username').textContent = data.username;
+        document.getElementById('user-email').textContent = data.email;
+      } else {
+        alert('Error loading user profile');
+      }
+    }
+
+    loadUserProfile(); // Завантажуємо дані профілю при завантаженні сторінки
+
+    // Кнопка для редагування профілю
+    document.getElementById('edit-profile-btn').addEventListener('click', () => {
+      window.location.href = '/edit-profile.html'; // Перехід на сторінку редагування профілю
+    });
+
+    // Кнопка для виходу
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('token'); // Видалення токену
+      window.location.href = '/login.html'; // Перехід на сторінку логіну
+    });
+  </script>
+</body>
+</html>

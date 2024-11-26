@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delete Profile</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <div class="container">
+    <h2>Delete Your Account</h2>
+    <p>Are you sure you want to delete your account? This action cannot be undone.</p>
+    
+    <button id="delete-btn">Delete Account</button>
+  </div>
+
+  <script>
+    // Обробка події видалення користувача
+    document.getElementById('delete-btn').addEventListener('click', async () => {
+      const token = localStorage.getItem('token'); // Отримуємо токен з localStorage
+
+      if (!token) {
+        alert("You must be logged in to delete your account.");
+        return;
+      }
+
+      // Підтвердження перед видаленням
+      const confirmDelete = confirm("Are you sure you want to delete your account?");
+      if (!confirmDelete) {
+        return;
+      }
+
+      try {
+        // Запит на видалення користувача
+        const response = await fetch('/auth/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}` // Додаємо токен до заголовка
+          }
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          alert("Your account has been successfully deleted.");
+          window.location.href = '/login.html'; // Перехід на сторінку логіну після видалення
+        } else {
+          alert(data.error || "Failed to delete account.");
+        }
+      } catch (error) {
+        console.error("Error:", error);
+        alert("Something went wrong. Please try again later.");
+      }
+    });
+  </script>
+</body>
+</html>

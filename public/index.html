@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="/css/styles.css">
+  <title>Register/Login</title>
+</head>
+<body>
+  <div id="form-container">
+    <form id="register-form" class="form register-form">
+      <h2 class="form-title">Register</h2>
+      <div class="form-group">
+        <input type="text" id="register-username" class="form-input" placeholder="Username" required>
+      </div>
+      <div class="form-group">
+        <input type="email" id="register-email" class="form-input" placeholder="Email" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="register-password" class="form-input" placeholder="Password" required>
+      </div>
+      <button type="submit" class="form-button">Register</button>
+    </form>
+
+    <!-- Link to Login page -->
+    <div class="form-group">
+      <button id="login-link" class="form-button">Go to Login</button>
+    </div>
+  </div>
+
+  <script>
+    // Реєстрація користувача
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById('register-username').value;
+      const email = document.getElementById('register-email').value;
+      const password = document.getElementById('register-password').value;
+
+      const response = await fetch('/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username, email, password })
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        alert("Registration successful!");
+        window.location.href = '/login.html'; // Перехід на сторінку входу після реєстрації
+      } else {
+        alert(data.message || data.error);
+      }
+    });
+
+    // Перехід на сторінку входу
+    document.getElementById('login-link').addEventListener('click', () => {
+      window.location.href = '/login.html';
+    });
+  </script>
+</body>
+</html>
